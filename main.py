@@ -1,7 +1,14 @@
+from statistics import mean
+
 import matplotlib.pyplot as plt
 import pandas as pd
 
-GRAVITY = 9.81
+g = 9.81
+point_equilibre_acceleration = 1
+point_equilibre_deceleration = 1
+
+acceleration_seuil_max = 1.1
+acceleration_seuil_min = -0.88
 
 def filter_data(filename):
     df = pd.read_csv(filename, delimiter=';')
@@ -12,40 +19,79 @@ def filter_data(filename):
     return x, y
 
 def calculate_acceleration(x, y):
-    nb_valeur_acceleration = 0
-    nb_valeur_deceleration = 0
-    acceleration = 0
-    deceleration = 0
-    # déterminé graphiquement mais pourrait être fait par le programme
-    ta1 = 2.5   # Temps de début d'accélération
-    ta2 = 5   # Temps de fin d'accélération
-    td1 = 10   # Temps de début de décélération
-    td2 = 12.5   # Temps de fin de décélération
-    for i in range(len(x)):
-        t = x[i]
-        v = y[i]
-        if ta1 < t < ta2:
-            acceleration += v
-            nb_valeur_acceleration += 1
-        if td1 < t < td2:
-            deceleration += v
-            nb_valeur_deceleration += 1
-    if nb_valeur_acceleration > 0:
-        acceleration = (acceleration * GRAVITY / nb_valeur_acceleration) - GRAVITY
-    if nb_valeur_deceleration > 0:
-        deceleration = (deceleration * GRAVITY / nb_valeur_deceleration) - GRAVITY
-    return acceleration, deceleration
+
+    min_index = y.index(min(y))
+    max_index = y.index(max(y))
+
+
+    for i in range(max_index, -1, -1):
+        if y[i] < point_equilibre_acceleration:
+            debut_acc = i
+            break
+
+    for i in range(max_index+1, len(y)):
+        if y[i] < point_equilibre_acceleration:
+            fin_acc = i
+            break
+
+    for i in range(min_index, -1, -1):
+        if y[i] > point_equilibre_deceleration:
+            debut_dece = i
+            break
+
+    for i in range(min_index+1, len(y)):
+        if y[i] > point_equilibre_deceleration:
+            fin_dece = i
+            break
+
+
+    return debut_acc, fin_acc, debut_dece, fin_dece
 
 x, y = filter_data("./montée.csv")
 
 plt.plot(x, y, 'ro')
-plt.title('Vitesse d\'un ascenseur en fonction du temps')
+plt.title('Profil de l''accélération lors de la descente de l\'ascenseur ')
 plt.xlabel('Temps (s)')
-plt.ylabel('Vitesse (m/s)')
+plt.ylabel('Accélération (en m/s^-2)')
 plt.show()
 
-acceleration, deceleration = calculate_acceleration(x, y)
+debut_acc, fin_acc, debut_dece, fin_dece = calculate_acceleration(x, y)
 
-print('Acceleration:', round(acceleration, 2), 'm/s^2')
-print('Deceleration:', round(deceleration, 2), 'm/s^2')
+
+mean_acc = (mean(y[debut_acc:fin_acc]) * g)-g
+mean_dece = (mean(y[debut_dece:fin_dece]) * g)-g
+
+delta_acc = x[debut_acc] - x[fin_acc]
+delta_dece = x[debut_dece] - x[fin_dece]
+
+print("L'acceletration est positive de {:.2f} s à {:.2f} s avec une accelération moyenne de {:.2f} m/s^2".format(x[debut_acc], x[fin_acc], mean_acc))
+print("L'acceletration est negative de {:.2f} s à {:.2f} s avec une deceleration moyenne de {:.2f} m/s^2".format(x[debut_dece], x[fin_dece], mean_dece))
+
+print("")
+
+vitesse_acc = mean_acc * delta_acc
+distance_acc = mean_acc * delta_acc**2
+
+vitesse_dece = mean_dece * delta_dece
+distance_dece = mean_dece * delta_dece**2
+
+print("On en déduit une acceleration pendant {:.2f} m à une vitesse de {:.2f} m/s".format(distance_acc, abs(vitesse_acc)))
+print("On en déduit une deceleration pendant {:.2f} m à une vitesse de {:.2f} m/s".format(abs(distance_dece), vitesse_dece))
+
+print("")
+
+print("La distance parcouru enttre l'acceleration et la décélération est calculée par x(t)=v1*t+x0")
+distance_parcourue = vitesse_acc * (x[fin_acc] - x[debut_dece])
+print("Elle est de {:.2f} m".format(distance_parcourue))
+
+print("")
+
+distance_tot = distance_acc + distance_parcourue + abs(distance_dece)
+temps_tot = x[fin_dece] - x[debut_acc]
+
+print("Ce qui fait un total de {:.2f} m en {:.2f} s".format(distance_tot, temps_tot))
+
+
+
+
 
