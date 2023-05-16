@@ -64,8 +64,8 @@ mean_dece = (mean(y[debut_dece:fin_dece]) * g)-g
 delta_acc = x[debut_acc] - x[fin_acc]
 delta_dece = x[debut_dece] - x[fin_dece]
 
-print("L'acceletration est positive de {:.2f} s à {:.2f} s avec une accelération moyenne de {:.2f} m/s^2".format(x[debut_acc], x[fin_acc], mean_acc))
-print("L'acceletration est negative de {:.2f} s à {:.2f} s avec une deceleration moyenne de {:.2f} m/s^2".format(x[debut_dece], x[fin_dece], mean_dece))
+print("L'accélération est positive de {:.2f} s à {:.2f} s avec une accélération moyenne de {:.2f} m/s^2".format(x[debut_acc], x[fin_acc], mean_acc))
+print("L'accélération est negative de {:.2f} s à {:.2f} s avec une deceleration moyenne de {:.2f} m/s^2".format(x[debut_dece], x[fin_dece], mean_dece))
 
 print("")
 
@@ -75,12 +75,12 @@ distance_acc = mean_acc * delta_acc**2
 vitesse_dece = mean_dece * delta_dece
 distance_dece = mean_dece * delta_dece**2
 
-print("On en déduit une acceleration pendant {:.2f} m à une vitesse de {:.2f} m/s".format(distance_acc, abs(vitesse_acc)))
+print("On en déduit une accélération pendant {:.2f} m à une vitesse de {:.2f} m/s".format(distance_acc, abs(vitesse_acc)))
 print("On en déduit une deceleration pendant {:.2f} m à une vitesse de {:.2f} m/s".format(abs(distance_dece), vitesse_dece))
 
 print("")
 
-print("La distance parcouru enttre l'acceleration et la décélération est calculée par x(t)=v1*t+x0")
+print("La distance parcourue entre l'accélération et la décélération est calculée par x(t)=v1*t+x0")
 distance_parcourue = vitesse_acc * (x[fin_acc] - x[debut_dece])
 print("Elle est de {:.2f} m".format(distance_parcourue))
 
