@@ -47,7 +47,7 @@ def calculate_acceleration(x, y):
 
     return debut_acc, fin_acc, debut_dece, fin_dece
 
-x, y = filter_data("./montée.csv")
+x, y = filter_data("./data/montee.csv")
 
 plt.plot(x, y, 'ro')
 plt.title('Profil de l''accélération lors de la descente de l\'ascenseur ')
