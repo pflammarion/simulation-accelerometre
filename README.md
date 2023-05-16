@@ -67,6 +67,8 @@ Avec un passage de vitesse entre 2 et 3 secondes et la vitesse de 50 km/h attein
 Cette courbe est moins facile à analyser. En effet, on remarque une deceleration à partir de 11 secondes où la vitesse de 80 km/h est atteinte, les frottements induisent ce début de chute de vitesse.
 Nous voyons aussi un passage de vitesse à 8 seconde.
 
+#### Analyse
 
-
-
+Grâce aux données d'accélération mesurée, nous avons réussi à déterminer une vitesse et une distance.
+Elle nous permet de pouvoir analyser des changements d'environnement qui affectent directement la vitesse.
+Nous pouvons donc penser à des utilisations pour prédire ou prévenir de problèmes potentiels lors que l'utilisation d'un objet tel qu'une voiture par exemple.
