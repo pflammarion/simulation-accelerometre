@@ -28,6 +28,9 @@ def filter_data(filename):
 def calculate_instantaneous_velocity(acceleration, time_interval):
     return (acceleration[:-1] * np.diff(time_interval)).cumsum()
 
+def calculate_instanctaneous_position(velocity, time_interval):
+    return (velocity * np.diff(time_interval)).cumsum()
+
 def calculate_noise(x, y, time):
     index = np.where(x > time)[0][0]
     return (y[index]/time) * x[:-1]
@@ -52,13 +55,15 @@ for filename in filenames:
 
     velocity = filter_velocity(velocity_noise, noise)
 
+    position = calculate_instanctaneous_position(velocity, x)
+
 
     fig, ax = plt.subplots()
     ax2 = ax.twinx()
 
 
     ax2.plot(x[:-1], y[:-1], 'green', markersize=1, zorder=0)
-    ax2.set_ylabel('Acceleration en G')
+    ax2.set_ylabel('Force en G')
 
     ax.plot(x[:-1], velocity_noise * 3.6, 'bo', label='Vitesse avec bruit (en m/s)', markersize=2, zorder=10)
     ax.plot(x[:-1], velocity * 3.6, 'ro', label='Vitesse sans bruit (en m/s)', markersize=2, zorder=5)
@@ -72,3 +77,11 @@ for filename in filenames:
 
     plt.grid(True)
     plt.show()
+
+
+    delta_velocity = (velocity_noise.iloc[-1] - velocity.iloc[-1]) * 3.6
+    print("Le delta de vitesse entre le signal bruité et le signal propre est de " + str(round(delta_velocity, 2)) + " km/h")
+
+    print("La voiture a parcourue une distance de " + str(round(position.iloc[-1], 2)) + " m")
+    print(" ")
+
