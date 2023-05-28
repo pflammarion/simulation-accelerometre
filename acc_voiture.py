@@ -85,3 +85,31 @@ for filename in filenames:
     print("La voiture a parcourue une distance de " + str(round(position.iloc[-1], 2)) + " m")
     print(" ")
 
+
+
+    # pour 30
+    seuil_acceleration_haut = 5
+    seuil_acceleration_bas = 4
+
+    # pour 50
+    #seuil_acceleration_haut = 3.5
+    #seuil_acceleration_bas = 1
+
+    # pour 80
+    #seuil_acceleration_haut = 3.8
+    #seuil_acceleration_bas = -2.2
+
+    passage = []
+    depas = False
+    last_index = 0
+
+    for i in range(1, len(y)):
+        if y[i] > seuil_acceleration_haut:
+            depas = True
+            last_index = i
+        elif y[i] < seuil_acceleration_bas and depas and x[i] - x[last_index] < 1:
+            passage.append(i)
+            depas = False
+
+    print("Indices des passages de vitesse :")
+    print(x[passage])
