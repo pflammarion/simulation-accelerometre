@@ -62,8 +62,8 @@ for filename in filenames:
     ax2 = ax.twinx()
 
 
-    ax2.plot(x[:-1], y[:-1], 'green', markersize=1, zorder=0)
-    ax2.set_ylabel('Force en G')
+    #ax2.plot(x[:-1], y[:-1], 'green', markersize=1, zorder=0)
+    #ax2.set_ylabel('Force en G')
 
     ax.plot(x[:-1], velocity_noise * 3.6, 'bo', label='Vitesse avec bruit (en m/s)', markersize=2, zorder=10)
     ax.plot(x[:-1], velocity * 3.6, 'ro', label='Vitesse sans bruit (en m/s)', markersize=2, zorder=5)
@@ -74,9 +74,6 @@ for filename in filenames:
 
     lines, labels = ax.get_legend_handles_labels()
     ax.legend(lines, labels, loc='upper left')
-
-    plt.grid(True)
-    plt.show()
 
 
     delta_velocity = (velocity_noise.iloc[-1] - velocity.iloc[-1]) * 3.6
@@ -113,3 +110,9 @@ for filename in filenames:
 
     print("Indices des passages de vitesse :")
     print(x[passage])
+
+    for passage_index in passage:
+        ax.vlines(x[passage_index], np.min(velocity_noise * 3.6), np.max(velocity_noise * 3.6), colors='purple', linestyles='dashed', label='Passage de vitesse')
+
+    plt.grid(True)
+    plt.show()
