@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-filenames = ["30", "50", "80"]
+filenames = ["30", "45", "80"]
+index = 0
 
 plt.figure().clear()
 plt.close()
@@ -37,11 +38,12 @@ def calculate_noise(x, y, time):
 
 def filter_velocity(velocity_noise, noise):
     if len(velocity_noise) < len(noise):
-        return velocity_noise - noise[:len(velocity_noise)]
+        velocity_temp = velocity_noise - noise[:len(velocity_noise)]
     else:
         noise_extended = np.repeat(noise.iloc[-1], len(velocity_noise))
         noise_extended = noise_extended[:len(velocity_noise)]
-        return velocity_noise - noise_extended
+        velocity_temp = velocity_noise - noise_extended
+    return velocity_temp + abs(np.amin(velocity_temp))
 
 
 # to remove the constant noise
@@ -59,42 +61,46 @@ for filename in filenames:
 
 
     fig, ax = plt.subplots()
-    ax2 = ax.twinx()
+    #ax2 = ax.twinx()
 
 
     #ax2.plot(x[:-1], y[:-1], 'green', markersize=1, zorder=0)
     #ax2.set_ylabel('Force en G')
 
-    ax.plot(x[:-1], velocity_noise * 3.6, 'bo', label='Vitesse avec bruit (en m/s)', markersize=2, zorder=10)
-    ax.plot(x[:-1], velocity * 3.6, 'ro', label='Vitesse sans bruit (en m/s)', markersize=2, zorder=5)
+    #ax.plot(x[:-1], velocity_noise * 3.6, 'ro', label='Vitesse avec bruit (en m/s)', markersize=2, zorder=10)
+    ax.plot(x[:-1], velocity * 3.6, 'bo', label='Vitesse sans bruit (en m/s)', markersize=2, zorder=5)
     ax.set_ylabel('Vitesse (en km/h)')
 
-    plt.title("Profil de l'accélération et de la vitesse d'une voiture de 0 à " + filename + " km/h")
+    plt.title("Profil de la vitesse d'une voiture de 0 à " + filename + " km/h à partir de l'accélération")
     ax.set_xlabel('Temps (s)')
 
-    lines, labels = ax.get_legend_handles_labels()
-    ax.legend(lines, labels, loc='upper left')
+    delta_velocity = (velocity_noise.iloc[-1] - velocity.iloc[-1]) / velocity.iloc[-1] * 100
 
+    print("Le delta de vitesse entre le signal bruité et le signal propre est de " + str(round(delta_velocity, 2)) + " %")
 
-    delta_velocity = (velocity_noise.iloc[-1] - velocity.iloc[-1]) * 3.6
-    print("Le delta de vitesse entre le signal bruité et le signal propre est de " + str(round(delta_velocity, 2)) + " km/h")
+    delta_velocity_car = int(filename) - (np.amax(velocity) * 3.6)
+
+    delta_velocity_car_pourcentage = delta_velocity_car / int(filename) * 100
+
+    print("L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de " + str(round(delta_velocity_car, 2)) + " km/h , soit " + str(round(delta_velocity_car_pourcentage, 2)) + " %")
 
     print("La voiture a parcourue une distance de " + str(round(position.iloc[-1], 2)) + " m")
     print(" ")
 
-
-
-    # pour 30
-    seuil_acceleration_haut = 5
-    seuil_acceleration_bas = 4
-
-    # pour 50
-    #seuil_acceleration_haut = 3.5
-    #seuil_acceleration_bas = 1
-
-    # pour 80
-    #seuil_acceleration_haut = 3.8
-    #seuil_acceleration_bas = -2.2
+    if index == 0:
+        # pour 30
+        seuil_acceleration_haut = 5
+        seuil_acceleration_bas = 4
+        index += 1
+    elif index == 1:
+        # pour 50
+        seuil_acceleration_haut = 3.5
+        seuil_acceleration_bas = 1
+        index += 1
+    else :
+        # pour 80
+        seuil_acceleration_haut = 3.8
+        seuil_acceleration_bas = -2.2
 
     passage = []
     depas = False
@@ -108,11 +114,12 @@ for filename in filenames:
             passage.append(i)
             depas = False
 
-    print("Indices des passages de vitesse :")
-    print(x[passage])
-
     for passage_index in passage:
         ax.vlines(x[passage_index], np.min(velocity_noise * 3.6), np.max(velocity_noise * 3.6), colors='purple', linestyles='dashed', label='Passage de vitesse')
 
+    ax.hlines(int(filename), x[0], x[len(x) - 1], colors='red', linestyles='dashed', label='Vitesse compteur')
+
+    lines, labels = ax.get_legend_handles_labels()
+    ax.legend(lines, labels, loc='upper left')
     plt.grid(True)
     plt.show()
