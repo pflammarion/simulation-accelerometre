@@ -1,20 +1,13 @@
-
-import matplotlib.pyplot as plt
+import tkinter as tk
+from tkinter import messagebox
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import pandas as pd
 
-filenames = ["30", "45", "80"]
-index = 0
-
-plt.figure().clear()
-plt.close()
-plt.cla()
-plt.clf()
-
 def filter_data(filename):
-
     df = pd.read_csv(filename, delimiter=';')
-    if (filename == "./data/bruit.csv") :
+    if filename == "./data/bruit.csv":
         df["time"] = df["time"].str.replace(',', '.').astype(float)
 
     df["gFy"] = df["gFy"].str.replace(',', '.').astype(float)
@@ -24,7 +17,6 @@ def filter_data(filename):
     y = y - y[0]
 
     return x, y
-
 
 def calculate_instantaneous_velocity(acceleration, time_interval):
     return (acceleration[:-1] * np.diff(time_interval)).cumsum()
@@ -45,55 +37,30 @@ def filter_velocity(velocity_noise, noise):
         velocity_temp = velocity_noise - noise_extended
     return velocity_temp + abs(np.amin(velocity_temp))
 
+def display_analysis(speed):
+    filename = f"./data/{speed}.csv"
+    x, y = filter_data(filename)
+    noise = calculate_instantaneous_velocity(y, x)
 
-x, y = filter_data("./data/bruit.csv")
-noise = calculate_instantaneous_velocity(y, x)
-
-for filename in filenames:
-    x, y = filter_data(f"./data/{filename}.csv")
     y = y * 9.81
     velocity_noise = calculate_instantaneous_velocity(y, x)
-
     velocity = filter_velocity(velocity_noise, noise)
-
     position = calculate_instanctaneous_position(velocity, x)
 
-
-    fig, ax = plt.subplots()
-
+    fig = Figure(figsize=(8, 6))
+    ax = fig.add_subplot(111)
     ax.plot(x[:-1], velocity * 3.6, 'bo', label='Vitesse sans bruit (en m/s)', markersize=2, zorder=5)
     ax.set_ylabel('Vitesse (en km/h)')
-
-    plt.title("Profil de la vitesse d'une voiture de 0 à " + filename + " km/h à partir de l'accélération")
     ax.set_xlabel('Temps (s)')
+    ax.set_title(f"Profil de la vitesse d'une voiture de 0 à {speed} km/h à partir de l'accélération")
 
-    delta_velocity = (velocity_noise.iloc[-1] - velocity.iloc[-1]) / velocity.iloc[-1] * 100
-
-    delta_velocity_car = int(filename) - (np.amax(velocity) * 3.6)
-
-    delta_velocity_car_pourcentage = delta_velocity_car / int(filename) * 100
-
-    print("L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de " + str(round(delta_velocity_car, 2)) + " km/h par rapport à " + filename +"km/h , soit " + str(round(delta_velocity_car_pourcentage, 2)) + " %")
-
-    time_to_max = x.iloc[np.argmax(velocity)] - x.iloc[np.argmin(velocity)]
-    trajet_length = position.iloc[np.argmax(velocity)] - position.iloc[np.argmin(velocity)]
-
-    print("La voiture a atteint sa vitesse maximale en " + str(round(time_to_max, 2)) + " secondes et " + str(round(trajet_length, 2)) + " m")
-
-    print(" ")
-
-    if index == 0:
-        # pour 30
+    if speed == "30":
         seuil_acceleration_haut = 5
         seuil_acceleration_bas = 4
-        index += 1
-    elif index == 1:
-        # pour 50
+    elif speed == "45":
         seuil_acceleration_haut = 3.5
         seuil_acceleration_bas = 1
-        index += 1
     else :
-        # pour 80
         seuil_acceleration_haut = 3.8
         seuil_acceleration_bas = -2.2
 
@@ -112,9 +79,54 @@ for filename in filenames:
     for passage_index in passage:
         ax.vlines(x[passage_index], np.min(velocity_noise * 3.6), np.max(velocity_noise * 3.6), colors='purple', linestyles='dashed', label='Passage de vitesse')
 
-    ax.hlines(int(filename), x[0], x[len(x) - 1], colors='red', linestyles='dashed', label='Vitesse compteur')
+    ax.hlines(int(speed), x[0], x[len(x) - 1], colors='red', linestyles='dashed', label='Vitesse compteur')
 
     lines, labels = ax.get_legend_handles_labels()
-    ax.legend(lines, labels, loc='upper left')
-    plt.grid(True)
-    plt.show()
+    ax.legend(lines, labels, loc='upper left', bbox_to_anchor=(0, 0.95))
+    ax.grid(True)
+
+
+    delta_velocity_car = int(speed) - (np.amax(velocity) * 3.6)
+    delta_velocity_car_pourcentage = delta_velocity_car / int(speed) * 100
+
+    time_to_max = x.iloc[np.argmax(velocity)] - x.iloc[np.argmin(velocity)]
+    trajet_length = position.iloc[np.argmax(velocity)] - position.iloc[np.argmin(velocity)]
+
+    analysis_text = f"L'erreur entre la vitesse réelle et la vitesse affichée de la voiture est de {round(delta_velocity_car, 2)} km/h par rapport à {speed} km/h, soit {round(delta_velocity_car_pourcentage, 2)}%\n\n"
+    analysis_text += f"La voiture a atteint sa vitesse maximale en {round(time_to_max, 2)} secondes et {round(trajet_length, 2)} m"
+
+    analysis_window = tk.Toplevel(root)
+    analysis_window.title("Analyse des données")
+
+    canvas = FigureCanvasTkAgg(fig, master=analysis_window)
+    canvas.draw()
+    canvas.get_tk_widget().grid(row=0, column=1, rowspan=2, sticky=tk.NSEW)
+
+    analysis_text_widget = tk.Text(analysis_window, height=6, width=40)
+    analysis_text_widget.insert(tk.END, analysis_text)
+    analysis_text_widget.grid(row=0, column=0, sticky=tk.NW, padx=10, pady=10)
+
+    analysis_window.grid_rowconfigure(0, weight=1)
+    analysis_window.grid_columnconfigure(1, weight=1)
+    analysis_window.update_idletasks()
+    analysis_window.geometry(f"{analysis_window.winfo_width()}x{analysis_window.winfo_height()}")
+
+
+def button_click(speed):
+    messagebox.showinfo("Sélection", f"Vous avez sélectionné {speed} km/h")
+    display_analysis(speed)
+
+root = tk.Tk()
+root.title("Sélection de vitesse")
+root.geometry("300x200")
+
+button_30 = tk.Button(root, text="30 km/h", command=lambda: button_click("30"))
+button_30.pack(pady=10)
+
+button_45 = tk.Button(root, text="45 km/h", command=lambda: button_click("45"))
+button_45.pack(pady=10)
+
+button_80 = tk.Button(root, text="80 km/h", command=lambda: button_click("80"))
+button_80.pack(pady=10)
+
+root.mainloop()
