@@ -103,8 +103,12 @@ def display_analysis_car(speed):
             passage.append(i)
             depas = False
 
+    colors = ['purple', 'orange']
     for passage_index in passage:
-        ax.vlines(x[passage_index], np.min(velocity_noise * 3.6), np.max(velocity_noise * 3.6), colors='purple', linestyles='dashed', label='Passage de vitesse')
+        color_index = passage.index(passage_index) % len(colors)
+        color = colors[color_index]
+        label_text = "passage de vitesse " + str(passage.index(passage_index) + 1)
+        ax.vlines(x[passage_index], np.min(velocity_noise * 3.6), np.max(velocity_noise * 3.6), colors=color, linestyles='dashed', label=label_text)
 
     ax.hlines(int(speed), x[0], x[len(x) - 1], colors='red', linestyles='dashed', label='Vitesse compteur')
 
