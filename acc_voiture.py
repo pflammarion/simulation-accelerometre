@@ -5,6 +5,16 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import pandas as pd
 
+x, y = None, None
+noise = None
+velocity_noise = None
+velocity = None
+position = None
+fig = None
+ax = None
+canvas = None
+analysis_text_widget = None
+
 def filter_data(filename):
     df = pd.read_csv(filename, delimiter=';')
     if filename == "./data/bruit.csv":
@@ -38,6 +48,8 @@ def filter_velocity(velocity_noise, noise):
     return velocity_temp + abs(np.amin(velocity_temp))
 
 def display_analysis(speed):
+    global fig, ax, canvas, analysis_text_widget
+
     filename = f"./data/{speed}.csv"
     x, y = filter_data(filename)
     noise = calculate_instantaneous_velocity(y, x)
@@ -47,8 +59,13 @@ def display_analysis(speed):
     velocity = filter_velocity(velocity_noise, noise)
     position = calculate_instanctaneous_position(velocity, x)
 
-    fig = Figure(figsize=(8, 6))
-    ax = fig.add_subplot(111)
+    if fig is None:
+        fig = Figure(figsize=(8, 6))
+        ax = fig.add_subplot(111)
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        canvas.get_tk_widget().grid(row=2, column=0, padx=10, pady=10, columnspan=3)
+
+    ax.clear()
     ax.plot(x[:-1], velocity * 3.6, 'bo', label='Vitesse sans bruit (en m/s)', markersize=2, zorder=5)
     ax.set_ylabel('Vitesse (en km/h)')
     ax.set_xlabel('Temps (s)')
@@ -95,38 +112,37 @@ def display_analysis(speed):
     analysis_text = f"L'erreur entre la vitesse réelle et la vitesse affichée de la voiture est de {round(delta_velocity_car, 2)} km/h par rapport à {speed} km/h, soit {round(delta_velocity_car_pourcentage, 2)}%\n\n"
     analysis_text += f"La voiture a atteint sa vitesse maximale en {round(time_to_max, 2)} secondes et {round(trajet_length, 2)} m"
 
-    analysis_window = tk.Toplevel(root)
-    analysis_window.title("Analyse des données")
+    if analysis_text_widget is None:
+        analysis_text_widget = tk.Text(root, height=6, width=90)
+        analysis_text_widget.grid(row=3, column=0, padx=10, pady=10, columnspan=3)
 
-    canvas = FigureCanvasTkAgg(fig, master=analysis_window)
-    canvas.draw()
-    canvas.get_tk_widget().grid(row=0, column=1, rowspan=2, sticky=tk.NSEW)
-
-    analysis_text_widget = tk.Text(analysis_window, height=6, width=40)
+    analysis_text_widget.delete("1.0", tk.END)
     analysis_text_widget.insert(tk.END, analysis_text)
-    analysis_text_widget.grid(row=0, column=0, sticky=tk.NW, padx=10, pady=10)
 
-    analysis_window.grid_rowconfigure(0, weight=1)
-    analysis_window.grid_columnconfigure(1, weight=1)
-    analysis_window.update_idletasks()
-    analysis_window.geometry(f"{analysis_window.winfo_width()}x{analysis_window.winfo_height()}")
+    # Mise à jour du graphique
+    canvas.draw()
+
 
 
 def button_click(speed):
-    messagebox.showinfo("Sélection", f"Vous avez sélectionné {speed} km/h")
     display_analysis(speed)
 
 root = tk.Tk()
 root.title("Sélection de vitesse")
-root.geometry("300x200")
+root.geometry("800x850")
+
+
+titre = tk.Text(root, height=1, width=90)
+titre.insert(tk.END, "Choix d'une vitesse cible de la voiture")
+titre.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
 
 button_30 = tk.Button(root, text="30 km/h", command=lambda: button_click("30"))
-button_30.pack(pady=10)
+button_30.grid(row=1, column=0, padx=10, pady=10)
 
 button_45 = tk.Button(root, text="45 km/h", command=lambda: button_click("45"))
-button_45.pack(pady=10)
+button_45.grid(row=1, column=1, padx=10, pady=10)
 
 button_80 = tk.Button(root, text="80 km/h", command=lambda: button_click("80"))
-button_80.pack(pady=10)
+button_80.grid(row=1, column=2, padx=10, pady=10)
 
 root.mainloop()
