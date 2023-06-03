@@ -46,7 +46,6 @@ def filter_velocity(velocity_noise, noise):
     return velocity_temp + abs(np.amin(velocity_temp))
 
 
-# to remove the constant noise
 x, y = filter_data("./data/bruit.csv")
 noise = calculate_instantaneous_velocity(y, x)
 
@@ -61,13 +60,7 @@ for filename in filenames:
 
 
     fig, ax = plt.subplots()
-    #ax2 = ax.twinx()
 
-
-    #ax2.plot(x[:-1], y[:-1], 'green', markersize=1, zorder=0)
-    #ax2.set_ylabel('Force en G')
-
-    #ax.plot(x[:-1], velocity_noise * 3.6, 'ro', label='Vitesse avec bruit (en m/s)', markersize=2, zorder=10)
     ax.plot(x[:-1], velocity * 3.6, 'bo', label='Vitesse sans bruit (en m/s)', markersize=2, zorder=5)
     ax.set_ylabel('Vitesse (en km/h)')
 
@@ -76,15 +69,17 @@ for filename in filenames:
 
     delta_velocity = (velocity_noise.iloc[-1] - velocity.iloc[-1]) / velocity.iloc[-1] * 100
 
-    print("Le delta de vitesse entre le signal bruité et le signal propre est de " + str(round(delta_velocity, 2)) + " %")
-
     delta_velocity_car = int(filename) - (np.amax(velocity) * 3.6)
 
     delta_velocity_car_pourcentage = delta_velocity_car / int(filename) * 100
 
-    print("L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de " + str(round(delta_velocity_car, 2)) + " km/h , soit " + str(round(delta_velocity_car_pourcentage, 2)) + " %")
+    print("L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de " + str(round(delta_velocity_car, 2)) + " km/h par rapport à " + filename +"km/h , soit " + str(round(delta_velocity_car_pourcentage, 2)) + " %")
 
-    print("La voiture a parcourue une distance de " + str(round(position.iloc[-1], 2)) + " m")
+    time_to_max = x.iloc[np.argmax(velocity)] - x.iloc[np.argmin(velocity)]
+    trajet_length = position.iloc[np.argmax(velocity)] - position.iloc[np.argmin(velocity)]
+
+    print("La voiture a atteint sa vitesse maximale en " + str(round(time_to_max, 2)) + " secondes et " + str(round(trajet_length, 2)) + " m")
+
     print(" ")
 
     if index == 0:

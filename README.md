@@ -42,7 +42,7 @@ rapport au référentiel de la voiture. Nous avons ensuite effectué des mesures
 d’accélération linéaire en conduisant la voiture dans différentes conditions de
 conduite.
 
-Nous avons effectué des mesures d’accélération linéaire jusqu'à différentes vitesses (ici, 30 km/h, 50 km/h, 80 km/h).
+Nous avons effectué des mesures d’accélération linéaire jusqu'à différentes vitesses (ici, 30 km/h, 45 km/h, 80 km/h).
 
 Nous avons ensuite analysé les données pour déterminer la vitesse de la voiture au cours du temps.
 Pour cette étape, nous avons utilisé un programme python pour analyser les données et déterminer la vitesse de la voiture au cours
@@ -56,7 +56,7 @@ pour visualiser les résultats et les comparer à l'accélération.
 Nous pouvons observer une augmentation linéaire de la vitesse avec un plat lors d'un passage de vitesse de la boite mécanique de la voiture.
 La voiture atteint la vitesse de 30km/h à 4 seconde après le début de l'enregistrement.
 
-![img_1.png](img/50.png)
+![img_1.png](img/45.png)
 
 Comme lors de l'accélération de 0 à 30 km/h, nous avons une augmentation linéaire de la vitesse.
 Avec un passage de vitesse entre 2 et 3 secondes et la vitesse de 50 km/h atteinte à partir de 5 secondes
@@ -65,8 +65,22 @@ Avec un passage de vitesse entre 2 et 3 secondes et la vitesse de 50 km/h attein
 ![img_2.png](img/80.png)
 
 
+
 Cette courbe est moins facile à analyser. En effet, on remarque une décélération à partir de 11 secondes où la vitesse de 80 km/h est atteinte, les frottements induisent ce début de chute de vitesse.
 Nous voyons aussi un passage de vitesse à 8 seconde.
+
+
+```
+L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de 2.27 km/h par rapport à 30km/h , soit 7.57 %
+La voiture a atteint sa vitesse maximale en 3.37 secondes et 11.83 m
+ 
+L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de 4.51 km/h par rapport à 45km/h , soit 10.02 %
+La voiture a atteint sa vitesse maximale en 7.15 secondes et 43.35 m
+ 
+L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de 6.33 km/h par rapport à 80km/h , soit 7.91 %
+La voiture a atteint sa vitesse maximale en 9.43 secondes et 102.32 m
+
+```
 
 #### Analyse
 
