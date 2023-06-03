@@ -13,6 +13,7 @@ fig = None
 ax = None
 canvas = None
 analysis_text_widget = None
+g = 9.81
 
 def filter_data_car(filename):
     df = pd.read_csv(filename, delimiter=';')
@@ -31,8 +32,8 @@ def filter_data_elevator(filename):
     df = pd.read_csv(filename, delimiter=';')
     df['gFz'] = df['gFz'].str.replace(',', '.').astype(float)
     df = df.drop_duplicates(subset='time', keep='last')
-    x = df['time'].tolist()
-    y = df['gFz'].tolist()
+    x = df['time']
+    y = df['gFz']
     return x, y
 
 def calculate_instantaneous_velocity(acceleration, time_interval):
@@ -63,7 +64,7 @@ def display_analysis_car(speed):
     filename = f"./data/{speed}.csv"
     x, y = filter_data_car(filename)
 
-    y = y * 9.81
+    y = y * g
     velocity_noise = calculate_instantaneous_velocity(y, x)
     velocity = filter_velocity(velocity_noise, noise)
     position = calculate_instanctaneous_position(velocity, x)
@@ -128,7 +129,6 @@ def display_analysis_car(speed):
     analysis_text_widget.delete("1.0", tk.END)
     analysis_text_widget.insert(tk.END, analysis_text)
 
-    # Mise à jour du graphique
     canvas.draw()
 
 def display_analysis_elevator():
@@ -137,6 +137,7 @@ def display_analysis_elevator():
     filename = f"./data/montee.csv"
     x, y = filter_data_elevator(filename)
 
+    debut_acc, fin_acc, debut_dece, fin_dece = calculate_acceleration_elevator(x, y)
 
     if fig is None:
         fig = Figure(figsize=(8, 6))
@@ -145,14 +146,37 @@ def display_analysis_elevator():
         canvas.get_tk_widget().grid(row=2, column=0, padx=10, pady=10, columnspan=3)
 
     ax.clear()
-    ax.plot(x, y, 'bo', markersize=2)
+    ax.plot(x, y, 'bo', label="Force en g", markersize=2)
     ax.set_ylabel('G Force')
     ax.set_xlabel('Temps (s)')
-    ax.set_title('Profil de l''accélération lors de la montée de l\'ascenseur ')
+    ax.set_title("Profil de l'accélération lors de la montée de l'ascenseur sur 3 étages")
 
+    mean_acc = (np.mean(y[debut_acc:fin_acc]) * g) - g
+    mean_dece = (np.mean(y[debut_dece:fin_dece]) * g) - g
+
+    delta_acc = x[debut_acc] - x[fin_acc]
+    delta_dece = x[debut_dece] - x[fin_dece]
+
+    vitesse_acc = mean_acc * delta_acc
+    distance_acc = mean_acc * delta_acc ** 2
+
+    vitesse_dece = mean_dece * delta_dece
+    distance_dece = mean_dece * delta_dece ** 2
+
+    distance_parcourue = vitesse_acc * (x[fin_acc] - x[debut_dece])
+
+    distance_tot = distance_acc + distance_parcourue + np.abs(distance_dece)
+
+    temps_tot = x[fin_dece] - x[debut_acc]
+
+    ax.vlines(x[debut_acc], np.min(y), np.max(y), colors='purple', linestyles='dashed', label='Début de la montée')
+    ax.vlines(x[fin_dece], np.min(y), np.max(y), colors='red', linestyles='dashed', label='Fin de la montée')
+
+    lines, labels = ax.get_legend_handles_labels()
+    ax.legend(lines, labels, loc='upper left', bbox_to_anchor=(0.65, 0.95))
     ax.grid(True)
 
-    analysis_text = f"texte à faire"
+    analysis_text = f"L'ascenseur parcourt {round(distance_tot, 2)} mètres en {round(temps_tot, 2)} secondes.\nSon accélération et sa décélération sont équivalentes, car la vitesse est nulle au départ comme à l'arrivée.\nElles sont de {round(mean_acc,2)} m/s^2, soit une vitesse atteinte de {round(vitesse_dece,2)} m/s."
 
     if analysis_text_widget is None:
         analysis_text_widget = tk.Text(root, height=6, width=90)
@@ -161,8 +185,39 @@ def display_analysis_elevator():
     analysis_text_widget.delete("1.0", tk.END)
     analysis_text_widget.insert(tk.END, analysis_text)
 
-    # Mise à jour du graphique
     canvas.draw()
+
+
+def calculate_acceleration_elevator(x, y):
+    min_index = np.argmin(y)
+    max_index = np.argmax(y)
+
+    point_equilibre_acceleration = 1
+    point_equilibre_deceleration = 1
+
+    for i in range(max_index, -1, -1):
+        if y[i] < point_equilibre_acceleration:
+            debut_acc = i
+            break
+
+    for i in range(max_index+1, len(y)):
+        if y[i] < point_equilibre_acceleration:
+            fin_acc = i
+            break
+
+    for i in range(min_index, -1, -1):
+        if y[i] > point_equilibre_deceleration:
+            debut_dece = i
+            break
+
+    for i in range(min_index+1, len(y)):
+        if y[i] > point_equilibre_deceleration:
+            fin_dece = i
+            break
+
+
+
+    return debut_acc, fin_acc, debut_dece, fin_dece
 
 
 def button_click(file):
@@ -182,8 +237,8 @@ def simulation_voiture():
     button_80.grid(row=1, column=2, padx=10, pady=10)
 
     if canvas is not None:
-        ax.clear()  # Clear the figure
-        canvas.draw()  # Redraw the cleared canvas
+        ax.clear()
+        canvas.draw()
 
     if analysis_text_widget is not None:
        analysis_text_widget.delete("1.0", tk.END)
