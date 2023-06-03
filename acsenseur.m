@@ -97,8 +97,8 @@ plot(time(fin_dece), accel(fin_dece), 'bo', 'MarkerSize', 10, 'LineWidth', 1.4, 
 
 grid on;
 xlabel('Temps (s)');
-ylabel('Accélération (m/s^2)');
-title('Profil de l''accélération lors de la descente de l''ascenseur');
+ylabel('Force G');
+title('Profil de l''accélération lors de la montée de l''ascenseur');
 legend('Accélération', 'Début de la descente', 'Fin de la descente');
 
 g = 9.81;
@@ -134,4 +134,3 @@ distance_tot = distance_acc + distance_parcourue + abs(distance_dece);
 temps_tot = time(fin_dece) - time(debut_acc);
 
 disp("Ce qui fait un total de " + distance_tot + " m en " + temps_tot +  " s");
-
