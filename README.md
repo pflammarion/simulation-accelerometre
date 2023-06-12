@@ -21,7 +21,8 @@ pip install -r requirements.txt
 > Attention, ce script ne fonctionne pas sous MacOS Silicon
 
 ------
-
+![demo.gif](./img/demo.gif)
+-----
 ## Simulation 1
 
 _Construction d'un dispositif pour mesurer l'accélération linéaire à l'aide d'un accéléromètre._ Pour cette simulation, nous avons utilisé un accéléromètre MEMS. Dans le cas de l'utilisation de ce capteur nous avons utilisé l'application "Physics Toolbox Suite" qui enregistre en temps réel les données de l'accéléromètre implémenté dans un smartphone.
