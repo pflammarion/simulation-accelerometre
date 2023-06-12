@@ -1,5 +1,16 @@
 Ce présent dossier contient les deux simulations du G5E pour l'Etat de l’Art à propos des Accéléromètres Industriels (MEMS et autres)
 
+------
+
+# Rapport sur les simulations
+
+Vous trouverez le rapport sur les simulations ici :
+[Rapport sur les simulations](Etat_de_l_Art___Simulation.pdf)
+
+
+-------------
+
+
 ## Simulation 1
 
 _Construction d'un dispositif pour mesurer l'accélération linéaire à l'aide d'un accéléromètre._ Pour cette simulation, nous avons utilisé un accéléromètre MEMS. Dans le cas de l'utilisation de ce capteur nous avons utilisé l'application "Physics Toolbox Suite" qui enregistre en temps réel les données de l'accéléromètre implémenté dans un smartphone.
