@@ -82,6 +82,19 @@ l’implémenter aussi en Python. Nous obtenons les mêmes résultats
 ![img.png](img/screen_asc.png)
 
 
+Pour conclure cette simulation, nous pouvons dire que l’accéléromètre utilisé semble
+avoir une bonne précision car nous sommes dans le bon ordre de grandeur. Cette simulation met en évidence les variations de l’accélération subie par les passagers, ce
+programme pourrait aussi permettre de détecter des anomalies telles que des accélérations trop brusques, des secousses ou des vibrations. De plus, nous remarquons qu’un
+ascenseur n’a pas d’accélération linéaire jusqu’à sa décélération et son arrêt, mais une
+vitesse limite (0,96 m/s) atteinte en 2,5 secondes.
+
+
+Il aurait été intéressant de comparer les différents profils d’ascenseur, sur un nombre
+différent d’étages. De plus, nous aurions aussi pu analyser le profil d’accélération d’un
+ascenseur lors de sa descente pour en tirer des conclusions quant au fonctionnement de
+celui-ci.
+
+
 ## Simulation 2
 
 _Fixation d’un accéléromètre à l’intérieur d’une voiture et utilisation pour mesurer
