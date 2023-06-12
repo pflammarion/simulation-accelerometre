@@ -10,6 +10,17 @@ Vous trouverez le rapport sur les simulations ici :
 
 -------------
 
+## Dépendances
+
+**Pour installer les dépendances obligatoires, lancer la commande suivante :**
+
+```
+pip install -r requirements.txt
+```
+
+> Attention, ce script ne fonctionne pas sous MacOS Silicon
+
+------
 
 ## Simulation 1
 
