@@ -2,18 +2,62 @@ Ce présent dossier contient les deux simulations du G5E pour l'Etat de l’Art 
 
 ## Simulation 1
 
-_Construction d’un dispositif pour mesurer l’accélération linéaire à l’aide d’un
-accéléromètre._ Pour cette simulation, nous pouvons utiliser un accéléromètre
-MEMS. 
+_Construction d'un dispositif pour mesurer l'accélération linéaire à l'aide d'un accéléromètre._ Pour cette simulation, nous avons utilisé un accéléromètre MEMS. Dans le cas de l'utilisation de ce capteur nous avons utilisé l'application "Physics Toolbox Suite" qui enregistre en temps réel les données de l'accéléromètre implémenté dans un smartphone.
+    
+_Montée dans un ascenseur et effectuer des mesures d'accélération linéaire à différents moments de la montée ou de la descente._ Pour cette étape, nous sommes montés dans un ascenseur et avons effectué des mesures d'accélération linéaire lors de la montée ou de la descente de celui-ci. Nous avons enregistré les données en utilisant un smartphone.
+    
+_Analyse des données pour déterminer la vitesse de l'ascenseur au cours du temps._ Pour cette étape, nous allons utiliser un logiciel de traitement de données (MATLAB ainsi que Python) pour analyser les données et déterminer la vitesse de l'ascenseur au cours du temps. Nous allons tracer un graphique de l'accélération en fonction du temps pour visualiser les résultats qui en découlent.
 
-Dans le cas de l’utilisation de ce capteur, nous avons utilisé un smartphone pour enregistrer les données de l’accéléromètre.
 
-Nous sommes monté dans un ascenseur pour effectuer des mesures d’accélération linéaire lors de la montée de celui-ci à l'aide d'une application sur smartphone.
+Nous avons utilisé l’application "Physics Toolbox Suite" pour enregistrer les varia-
+tion de l’accélération de la pesanteur à la surface de la Terre en fonction du temps lors
+de la montée d’un ascenseur sur 3 étages. Nous avons dans un premier temps analysé
+ce tableau pour en déduire les données qui nous intéressaient.
 
-Nous avons utilisé un logiciel de traitement de données (MATLAB) et un code python équivalent pour analyser les données et déterminer la vitesse de l’ascenseur au cours
-du temps. Nous avons tracé un graphique de l'accélération en fonction du temps pour visualiser les résultats.
+![img.png](img/donneeasc.png)
 
-#### Nous avons obtenu les résultats suivants :
+
+Comme nous pouvons le remarquer dans ce tableau, la première colonne nous permet de définir l’instant où la mesure a été prise. Les autres colonnes sont respectivement
+l’accélération en x, en y, en z et la somme de ces forces. Dans le cadre de cette expérience nous souhaitons analyser les variations de l’accélération par rapport à l’axe z. La
+somme totale des forces ne serait pas intéressante car l’ascenseur ayant une trajectoire
+purement verticale, cela ne ferait qu’ajouter du bruit à nos valeurs.
+
+Nous n’allons donc garder que le temps et la mesure de l’accélération en z que nous
+allons afficher sur un graphique pour une meilleure visualisation du jeu de données.
+
+
+Dans un premier temps, nous avons fait notre simulation sur le logiciel MATLAB.
+Une fois le jeu de données chargé, nous obtenons le graphique suivant :
+
+![img.png](img/graphasc.png)
+
+Sur ce graphique, nous remarquons par analyse graphique une augmentation
+de l’accélération de 2,5 secondes à 5 seconde, une stabilisation pendant 5 secondes, et
+une décélération durant 2,5 secondes. Nous allons donc diviser notre programme en
+3 parties distinctes : la phase d’accélération, la phase de vitesse constante, et la phase
+de décélération. Pour que notre algorithme soit juste, nous avons défini une vitesse de
+départ et d’arrivée à 0 m/s. Nous en déduisons le graphique suivant :
+
+![img.png](img/analyseasc.png)
+
+
+Nous avons fait une moyenne de l’accélération que nous avons préalablement multipliée par l’accélération de la pesanteur standard que nous avons notée "g", pour
+convertir nos valeurs en accélération. Nous avons pris pour nos analyses une valeur de g
+de 9, 81 m/s^2.
+
+Une fois ces moyennes calculées, nous pouvons en déduire la vitesse maximale atteinte à la suite de l’accélération qui est donnée par :
+
+![img.png](img/calc1.png)
+
+Nous pouvons ensuite en déduire la distance parcourue par l’ascenseur en calculant
+la distance parcourue lors de l’accélération, lors de la phase durant laquelle la vitesse
+est constante, et durant la décélération. Nous restons dans le cas où la vitesse à l’origine
+est 0 m/s.
+
+![img.png](img/calc2.png)
+
+Nous obtenons après ces calculs les résultats suivant lors de l’analyse de la montée
+d’un ascenseur sur 3 étages :
 
 ```
 
@@ -29,9 +73,14 @@ Elle est de 5.17 m
 Ce qui fait un total de 9.02 m en 9.43 s
 
 ```
+
+Une fois ce programme réalisé et cohérent avec l’expérience, nous avons décidé de
+l’implémenter aussi en Python. Nous obtenons les mêmes résultats
+
 #### Nous obtenons ce graphique :
 
-![img.png](img/ascenseur.png)
+![img.png](img/screen_asc.png)
+
 
 ## Simulation 2
 
@@ -51,18 +100,18 @@ pour visualiser les résultats et les comparer à l'accélération.
 
 #### Nous obtenons ces graphiques :
 
-![img.png](img/30.png)
+![img.png](img/screen_30.png)
 
 Nous pouvons observer une augmentation linéaire de la vitesse avec un plat lors d'un passage de vitesse de la boite mécanique de la voiture.
 La voiture atteint la vitesse de 30km/h à 4 seconde après le début de l'enregistrement.
 
-![img_1.png](img/45.png)
+![img_1.png](img/screen_45.png)
 
 Comme lors de l'accélération de 0 à 30 km/h, nous avons une augmentation linéaire de la vitesse.
 Avec un passage de vitesse entre 2 et 3 secondes et la vitesse de 50 km/h atteinte à partir de 5 secondes
 
 
-![img_2.png](img/80.png)
+![img_2.png](img/screen_80.png)
 
 
 
