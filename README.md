@@ -97,40 +97,118 @@ celui-ci.
 
 ## Simulation 2
 
-_Fixation d’un accéléromètre à l’intérieur d’une voiture et utilisation pour mesurer
-l’accélération linéaire de la voiture._ Pour cette simulation, vous avons fixé un
-accéléromètre à l’intérieur d’une voiture pour que celui-ci ne bouge plus par
-rapport au référentiel de la voiture. Nous avons ensuite effectué des mesures
-d’accélération linéaire en conduisant la voiture dans différentes conditions de
-conduite.
+Pour cette simulation, nous avons fixé un accéléromètre à l'intérieur d'une voiture pour que celui-ci ne bouge plus par rapport au référentiel de la voiture. Nous avons ensuite effectué des mesures d'accélération linéaire en conduisant la voiture à plusieurs accélérations différentes : de 0 à 30 km/h, de 0 à 45 km/h et de 0 à 80km/h.
+    
+Pour cette étape, nous avons développé un programme Python pour analyser les données relevé et déterminer la vitesse de la voiture au cours du temps. Nous avons donc tracé un graphique de la vitesse en fonction du temps pour visualiser les résultats et les analyses qui en découlent.
 
-Nous avons effectué des mesures d’accélération linéaire jusqu'à différentes vitesses (ici, 30 km/h, 45 km/h, 80 km/h).
 
-Nous avons ensuite analysé les données pour déterminer la vitesse de la voiture au cours du temps.
-Pour cette étape, nous avons utilisé un programme python pour analyser les données et déterminer la vitesse de la voiture au cours
-du temps. Nous allons tracer un graphique de la vitesse en fonction du temps
-pour visualiser les résultats et les comparer à l'accélération.
+### Analyse des résultats :
 
-#### Nous obtenons ces graphiques :
+Pour notre deuxième simulation, nous nous sommes intéressés au profil de l’accélération d’une voiture d’une vitesse nulle à une vitesse choisie. Le but de cette simulation
+est de pouvoir analyser la variation de la vitesse d’une voiture et en déduire sa linéarité, l’impact de changements extérieurs sur la vitesse, et la précision du compteur de
+la voiture.
+Nous avons donc mesuré trois accélérations : 30, 45, et 80 km/h. Lors de notre expérience, nous avions une vitesse nulle à l’origine sur une route plate.
+
+
+Dans un premier temps, nous avons, comme lors de la première expérience, choisi les données à analyser. Durant l’expérience, le téléphone était horizontal et orienté
+vers l’avant de la voiture, ainsi, l’accélération est à analyser sur l’axe y.
+Pour commencer cette simulation, nous avons fait un enregistrement de plusieurs secondes de la voiture, moteur allumé à l’arrêt, pour pouvoir calibrer notre expérience
+et en déduire l’équation du bruit subit par l’accéléromètre.
+
+Nous avons donc commencé par calculer l’accélération instantanée en multipliant
+toutes les valeurs par "g". Nous avons ensuite calculé la vitesse instantanée en
+suivant le même protocole que lors de la phase d’accélération lors de la phase de montée
+de l’ascenseur.
+
+Nous en déduisons donc les courbes de la vitesse mesurée en fonction du temps et
+la position de la voiture par rapport au point de départ.
+Le premier enregistrement représente l’accélération d’une voiture de 0 à 30 km/h :
 
 ![img.png](img/screen_30.png)
 
-Nous pouvons observer une augmentation linéaire de la vitesse avec un plat lors d'un passage de vitesse de la boite mécanique de la voiture.
-La voiture atteint la vitesse de 30km/h à 4 seconde après le début de l'enregistrement.
+Par analyse graphique, nous remarquons que la vitesse réelle atteinte n’est pas 30
+km/h mais 27,7 km/h, ce qui représente un écart de 7.57% par rapport à la vitesse
+souhaitée. De plus, comme l’expérience a été faite avec une voiture à boîte mécanique, nous pouvons remarquer un plateau sur la courbe qui traduit un passage de rapport
+de vitesse. Le passage de rapport de vitesse a été déterminé par le code, car celui-ci
+est d’autant plus visible sur la courbe de l’accélération. En effet, nous remarquons une
+chute de l’accélération à 0m/s2 qui décrit le passage de vitesse.
+
+![img.png](img/accelvoiture.png)
+
+Nous avons ensuite enregistré une accélération jusqu’à 45 km/h.
 
 ![img_1.png](img/screen_45.png)
 
-Comme lors de l'accélération de 0 à 30 km/h, nous avons une augmentation linéaire de la vitesse.
-Avec un passage de vitesse entre 2 et 3 secondes et la vitesse de 50 km/h atteinte à partir de 5 secondes
+Comme lors de l’accélération de 0 à 30 km/h, nous avons une augmentation linéaire
+de la vitesse. Nous avons aussi une différence entre la vitesse mesurée et la vitesse du
+compteur de la voiture. Dans cette simulation, il est de 10% avec une vitesse réelle
+atteinte à 40,5 km/h. Par analyse graphique, nous remarquons quelque chose d’intéressant : le premier passage de vitesse a la même allure que le passage de vitesse lors de la
+première expérience, tandis ce que le deuxième passage de vitesse en jaune sur le graphe
+15 a une allure vraiment différente. En effet, nous remarquons un plateau nettement
+plus long, avec une perte de vitesse et un petit rebond une fois la vitesse enclenchée.
+Cela s’explique par différentes choses : la distance parcourue par le levier de vitesse
+entre la deuxième et la troisième vitesse, et les frottements qui dépendent de la formule
+suivante :
 
+![img_1.png](img/calc3.png)
+
+
+La vitesse est donc exprimée au carré, nous en déduisons que la voiture subit quatre
+fois plus de frottements à 35km/h qu’à 15 km/h. De plus il faut prendre en compte les
+frottements des pièces mécaniques de la voiture.
+Pour la troisième expérience, nous avons élancé la voiture jusqu’à 80km/h. La voiture n’a subi qu’un seul passage de vitesse, de la vitesse numéro 2 à la vitesse numéro 3. Nous obtenons le graphique suivant :
 
 ![img_2.png](img/screen_80.png)
 
 
 
-Cette courbe est moins facile à analyser. En effet, on remarque une décélération à partir de 11 secondes où la vitesse de 80 km/h est atteinte, les frottements induisent ce début de chute de vitesse.
-Nous voyons aussi un passage de vitesse à 8 seconde.
+Par analyse graphique, nous remarquons que le passage de vitesse a les mêmes caractéristiques que le passage équivalent lors de la dernière analyse. Nous remarquons que
+la variation de vitesse est linéaire sur l’ensemble de l’accélération. Une fois la vitesse
+maximum atteinte, nous avons arrêté d’appuyer sur l’accélérateur et nous remarquons
+les frottements subis à cette vitesse qui sont trois à quatre fois supérieurs que lors
+des expériences précédentes. Nous pouvons aussi noter la différence de vitesse entre
+la vitesse lue sur le compteur et la vitesse maximale enregistrée. Nous avons ici une
+différence de 8%.
 
+![img_2.png](img/passage1.png)
+
+![img_2.png](img/passage2.png)
+
+
+
+Ces deux figures, nous montrent qu’il y a potentiellement une corrélation
+entre la conception des pièces mécaniques de la boite de vitesse et les performances de
+la voiture. Cela pourrait être important et pris en compte notamment dans le milieu
+du sport automobile.
+
+
+Il faut aussi prendre en compte la conception d’un levier de vitesse. En effet, la
+distance entre la vitesse une et la vitesse deux est plus courte que la distance entre la
+vitesse deux et la vitesse trois. Cela peut aussi expliquer le temps de passage qui est
+plus long dans le deuxième cas. Comme montré sur le graphique ci-dessous, la flèche rouge montre
+le chemin emprunté par le levier lors du passage de la vitesse une à la vitesse deux. Et
+la flèche bleue montre le chemin emprunté par le levier lors du passage de la vitesse
+deux à la vitesse trois. Cela met en évidence la différence de temps entre les différents
+passages de vitesse observés dans les différents jeux de données.
+
+
+À la suite de ces trois expériences, nous pouvons calculer le taux d’erreur moyen
+entre la vitesse enregistrée et le compteur.
+
+![img_2.png](img/calc4.png)
+
+
+Nous avons donc une erreur moyenne de 8,5% alors que le constructeur annonce une
+erreur de 5%. Nous en déduisons même si nos mesures sont précises à 3,5%. De plus
+il aurait été intéressant d’effectuer plusieurs fois les mesures dans les mêmes conditions
+afin de pouvoir comparer les différents jeux de données.
+Pour conclure cette simulation, nous pouvons dire que la mesure de l’accélération
+nous a permis de déterminer les différents passages de vitesse ainsi que leur effet sur
+l’accélération de la voiture. Nous avons aussi pu mesurer la précision des outils de
+mesure présents à bord. Les accéléromètres présents dans la voiture ont néanmoins de
+nombreux usages tels que la détection d’accident, ou de freinage brusque, mais aussi
+d’anomalies qui ne peuvent pas être ressenties par les utilisateurs comme un profil de
+passage de vitesse anormal.
 
 ```
 L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de 2.27 km/h par rapport à 30km/h , soit 7.57 %
@@ -143,13 +221,3 @@ L'erreur entre la vitesse réelle et la vitesse affiché de la voiture et de 6.3
 La voiture a atteint sa vitesse maximale en 9.43 secondes et 102.32 m
 
 ```
-
-#### Analyse
-
-Grâce aux données d'accélération mesurée, nous avons réussi à déterminer une vitesse et une distance.
-Elle nous permet de pouvoir analyser des changements d'environnement qui affectent directement la vitesse.
-Grâce aux données d'accélération mesurée, nous avons réussi à en déterminer une vitesse et une distance correspondante. L'on remarque également qu'avec les trois mesures (pour la voiture) les passages de vitesses se font au même moment, tout comme les décélérations due aux changements de vitesses.
-Ces mesures et variations nous permettent de déduire les changements d'environnements de l'objet en mouvement (ascenseur ou voiture). L'usage d'accéléromètre est massivement utilisé dans quasi toutes les études de mouvements d'objets, par exemple les navettes spatiales.
-
-Cependant notre précision n'est bien évidemment pas parfaite. Nos mesures ont été faites avec un capteur piézoélectriques ou piézorésistifs (grandement présent dans les smartphones), et possèdent une grande sensibilité aux interférences électromagnétiques et aux variations, ainsi les résultats sont soumis à un taux d'erreur plus ou moins grand lié aux conditions d'enregistrement. Mais, au vue de nos résultats, l'erreur (si elle existe) est très petite.
-Nous pouvons donc penser à des utilisations pour prédire ou prévenir de problèmes potentiels dus aux accélérations comprenant les chutes, les collisions, du stress sur les organes internes et l'inconfort pour les passagers. Des accélérations excessives peuvent également causer des dommages aux objets et mettre en danger la sécurité des personnes. Il est donc essentiel de respecter les normes de sécurité d’accélération pour prévenir ces risques.
